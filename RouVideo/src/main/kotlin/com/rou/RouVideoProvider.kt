@@ -35,8 +35,6 @@ class RouVideoProvider : MainAPI() {
     override val supportedTypes = setOf(TvType.Movie, TvType.TvSeries)
     override var lang = "zh"
     override val hasMainPage = true
-    // 首页 7 个分区串行加载, 避免并发请求被站点限流导致分类空白
-    override var sequentialMainPage = true
 
     // data 格式: "tag:XXX" 走 /t/XXX 分页, "series" 走 /series 分页
     override val mainPage = mainPageOf(
