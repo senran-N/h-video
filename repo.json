@@ -1,0 +1,8 @@
+{
+  "name": "h-video",
+  "description": "RouVideo (rou.video) 视频源: 国产AV/日本/自拍/探花/剧集",
+  "manifestVersion": 1,
+  "pluginLists": [
+    "https://raw.githubusercontent.com/senran-N/h-video/builds/plugins.json"
+  ]
+}
