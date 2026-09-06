@@ -47,19 +47,85 @@ class RouVideoProvider : MainAPI() {
         "tag:麻豆傳媒" to "麻豆傳媒",
         "tag:OnlyFans" to "OnlyFans",
         "tag:中文字幕" to "中文字幕",
-        "tag:巨乳" to "巨乳",
+        "tag:單體作品" to "單體作品",
         "tag:中出" to "中出",
+        "tag:巨乳" to "巨乳",
         "tag:人妻" to "人妻",
         "tag:絲襪" to "絲襪",
         "tag:熟女" to "熟女",
         "tag:NTR" to "NTR",
+        "tag:苗條" to "苗條",
+        "tag:美少女" to "美少女",
+        "tag:中國" to "中國",
         "tag:痴女" to "痴女",
-        "tag:制服誘惑" to "制服誘惑",
+        "tag:口交" to "口交",
+        "tag:極限高潮" to "極限高潮",
+        "tag:乳交" to "乳交",
+        "tag:淫亂" to "淫亂",
+        "tag:劇情" to "劇情",
+        "tag:多人運動" to "多人運動",
+        "tag:接吻" to "接吻",
+        "tag:twitter" to "twitter",
+        "tag:角色劇情" to "角色劇情",
+        "tag:潮吹" to "潮吹",
+        "tag:顏射" to "顏射",
+        "tag:少女" to "少女",
+        "tag:騎乘" to "騎乘",
+        "tag:不倫" to "不倫",
+        "tag:過膝襪" to "過膝襪",
+        "tag:制服" to "制服",
         "tag:OL" to "OL",
-        "tag:女教師" to "女教師",
-        "tag:學生" to "學生",
-        "tag:美乳" to "美乳",
         "tag:多P" to "多P",
+        "tag:姐姐" to "姐姐",
+        "tag:fansone" to "fansone",
+        "tag:女高中生" to "女高中生",
+        "tag:美乳" to "美乳",
+        "tag:羞辱" to "羞辱",
+        "tag:番外" to "番外",
+        "tag:爆汗" to "爆汗",
+        "tag:制服誘惑" to "制服誘惑",
+        "tag:umate" to "umate",
+        "tag:凌辱" to "凌辱",
+        "tag:亂交" to "亂交",
+        "tag:女教師" to "女教師",
+        "tag:玩偶姊姊" to "玩偶姊姊",
+        "tag:主播" to "主播",
+        "tag:大屁股" to "大屁股",
+        "tag:回春按摩" to "回春按摩",
+        "tag:美腿" to "美腿",
+        "tag:姐妹" to "姐妹",
+        "tag:絲襪美腿" to "絲襪美腿",
+        "tag:紀錄片" to "紀錄片",
+        "tag:偶像藝人" to "偶像藝人",
+        "tag:短髮" to "短髮",
+        "tag:羞恥" to "羞恥",
+        "tag:色控傳媒" to "色控傳媒",
+        "tag:按摩油" to "按摩油",
+        "tag:出道作" to "出道作",
+        "tag:台灣" to "台灣",
+        "tag:薄格" to "薄格",
+        "tag:主觀視角" to "主觀視角",
+        "tag:護士" to "護士",
+        "tag:溫泉" to "溫泉",
+        "tag:出軌" to "出軌",
+        "tag:口爆" to "口爆",
+        "tag:校服" to "校服",
+        "tag:手淫" to "手淫",
+        "tag:學生" to "學生",
+        "tag:女大學生" to "女大學生",
+        "tag:自拍" to "自拍",
+        "tag:亂倫" to "亂倫",
+        "tag:多P群交" to "多P群交",
+        "tag:按摩" to "按摩",
+        "tag:fortunecutie" to "fortunecutie",
+        "tag:黑絲" to "黑絲",
+        "tag:淫語" to "淫語",
+        "tag:女僕" to "女僕",
+        "tag:pornhub" to "pornhub",
+        "tag:原創節目企劃" to "原創節目企劃",
+        "tag:JVID" to "JVID",
+        "tag:泳裝" to "泳裝",
+        "tag:強制口交" to "強制口交",
     )
 
     private val mapper = jacksonObjectMapper().apply {
@@ -136,7 +202,7 @@ class RouVideoProvider : MainAPI() {
                 newHomePageResponse(request.name, list)
             } else if (data.startsWith("tag:")) {
                 val tag = data.removePrefix("tag:")
-                val enc = URLEncoder.encode(tag, "utf-8")
+                val enc = URLEncoder.encode(tag, "utf-8").replace("+", "%20")
                 val doc = app.get("$mainUrl/t/$enc?order=createdAt&page=$page", headers = defaultHeaders).document
                 val props = getPageProps(doc)
                 val arr = props?.path("videos")
@@ -157,7 +223,7 @@ class RouVideoProvider : MainAPI() {
 
     override suspend fun search(query: String, page: Int): SearchResponseList? {
         return try {
-            val enc = URLEncoder.encode(query, "utf-8")
+            val enc = URLEncoder.encode(query, "utf-8").replace("+", "%20")
             val doc = app.get("$mainUrl/search?q=$enc&page=$page", headers = defaultHeaders).document
             val props = getPageProps(doc) ?: return newSearchResponseList(emptyList(), false)
             val arr = props.path("videos")
