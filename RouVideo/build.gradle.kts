@@ -1,10 +1,12 @@
 dependencies {
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    // 仅编译期引用 App 自带的 okhttp(拦截器给 ExoPlayer 解包用), 不打进插件
+    compileOnly("com.squareup.okhttp3:okhttp:4.12.0")
 }
 
 // Use an integer for version numbers
-version = 1
+version = 2
 
 cloudstream {
     // All of these properties are optional, you can safely remove any of them.

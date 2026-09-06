@@ -25,6 +25,7 @@ import com.lagradost.cloudstream3.utils.ExtractorLink
 import com.lagradost.cloudstream3.utils.ExtractorLinkType
 import com.lagradost.cloudstream3.utils.Qualities
 import com.lagradost.cloudstream3.utils.newExtractorLink
+import okhttp3.Interceptor
 import org.jsoup.nodes.Document
 import java.net.URLEncoder
 
@@ -48,6 +49,17 @@ class RouVideoProvider : MainAPI() {
 
     private val mapper = jacksonObjectMapper().apply {
         configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    }
+
+    private val defaultHeaders = mapOf(
+        "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+        "Referer" to "$mainUrl/",
+        "Accept-Language" to "zh-CN,zh;q=0.9",
+    )
+
+    override fun getVideoInterceptor(extractorLink: ExtractorLink): Interceptor? {
+        // 站内 m3u8 / TS 分片套了 PNG 壳, 必须拆包播放器才能解析
+        return RouVideoInterceptor()
     }
 
     private fun getPageProps(doc: Document): JsonNode? {
@@ -97,7 +109,7 @@ class RouVideoProvider : MainAPI() {
         val data = request.data
         return try {
             if (data == "series") {
-                val doc = app.get("$mainUrl/series?page=$page").document
+                val doc = app.get("$mainUrl/series?page=$page", headers = defaultHeaders).document
                 val props = getPageProps(doc)
                 val arr = props?.path("list")
                 val list = mutableListOf<SearchResponse>()
@@ -110,7 +122,7 @@ class RouVideoProvider : MainAPI() {
             } else if (data.startsWith("tag:")) {
                 val tag = data.removePrefix("tag:")
                 val enc = URLEncoder.encode(tag, "utf-8")
-                val doc = app.get("$mainUrl/t/$enc?order=createdAt&page=$page").document
+                val doc = app.get("$mainUrl/t/$enc?order=createdAt&page=$page", headers = defaultHeaders).document
                 val props = getPageProps(doc)
                 val arr = props?.path("videos")
                 val list = mutableListOf<SearchResponse>()
@@ -131,7 +143,7 @@ class RouVideoProvider : MainAPI() {
     override suspend fun search(query: String, page: Int): SearchResponseList? {
         return try {
             val enc = URLEncoder.encode(query, "utf-8")
-            val doc = app.get("$mainUrl/search?q=$enc&page=$page").document
+            val doc = app.get("$mainUrl/search?q=$enc&page=$page", headers = defaultHeaders).document
             val props = getPageProps(doc) ?: return newSearchResponseList(emptyList(), false)
             val arr = props.path("videos")
             val list = mutableListOf<SearchResponse>()
@@ -151,7 +163,7 @@ class RouVideoProvider : MainAPI() {
 
     override suspend fun load(url: String): LoadResponse? {
         return try {
-            val doc = app.get(url).document
+            val doc = app.get(url, headers = defaultHeaders, referer = "$mainUrl/").document
             val props = getPageProps(doc) ?: return null
 
             val seriesNode = props.path("series")
@@ -265,7 +277,7 @@ class RouVideoProvider : MainAPI() {
             val videoId = data.substringAfterLast("/").substringBefore("?").trim()
             if (videoId.isBlank()) return false
 
-            val doc = app.get("$mainUrl/v/$videoId", referer = "$mainUrl/").document
+            val doc = app.get("$mainUrl/v/$videoId", headers = defaultHeaders, referer = "$mainUrl/").document
             val props = getPageProps(doc) ?: return false
             val ev = props.path("ev")
             if (ev.isMissingNode || ev.isNull) return false
@@ -281,7 +293,7 @@ class RouVideoProvider : MainAPI() {
             // /api/hls/xxx 会 302 到带签名的 m3u8 (index.jpg/png), 需要拿到最终地址
             var finalUrl = videoUrl
             try {
-                val resp = app.get(videoUrl, referer = "$mainUrl/v/$videoId", allowRedirects = false)
+                val resp = app.get(videoUrl, headers = defaultHeaders, referer = "$mainUrl/v/$videoId", allowRedirects = false)
                 val loc = resp.headers["location"] ?: resp.headers["Location"]
                 if (!loc.isNullOrBlank()) {
                     finalUrl = if (loc.startsWith("/")) mainUrl + loc else loc
