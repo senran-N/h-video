@@ -37,14 +37,29 @@ class RouVideoProvider : MainAPI() {
     override val hasMainPage = true
 
     // data 格式: "tag:XXX" 走 /t/XXX 分页, "series" 走 /series 分页
+    // 分类取自站点 /cat 索引, 按视频数排序
     override val mainPage = mainPageOf(
-        "tag:國產AV" to "國產AV",
-        "tag:日本" to "日本",
-        "tag:自拍流出" to "自拍流出",
-        "tag:探花" to "探花",
-        "tag:中文字幕" to "中文字幕",
-        "tag:OnlyFans" to "OnlyFans",
         "series" to "劇集更新",
+        "tag:自拍流出" to "自拍流出",
+        "tag:國產AV" to "國產AV",
+        "tag:探花" to "探花",
+        "tag:日本" to "日本",
+        "tag:麻豆傳媒" to "麻豆傳媒",
+        "tag:OnlyFans" to "OnlyFans",
+        "tag:中文字幕" to "中文字幕",
+        "tag:巨乳" to "巨乳",
+        "tag:中出" to "中出",
+        "tag:人妻" to "人妻",
+        "tag:絲襪" to "絲襪",
+        "tag:熟女" to "熟女",
+        "tag:NTR" to "NTR",
+        "tag:痴女" to "痴女",
+        "tag:制服誘惑" to "制服誘惑",
+        "tag:OL" to "OL",
+        "tag:女教師" to "女教師",
+        "tag:學生" to "學生",
+        "tag:美乳" to "美乳",
+        "tag:多P" to "多P",
     )
 
     private val mapper = jacksonObjectMapper().apply {
