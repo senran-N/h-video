@@ -40,6 +40,23 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
 
+      - name: Build Cloudstream Gradle plugin locally
+        # JitPack is flaky for com.github.recloudstream:gradle:-SNAPSHOT,
+        # so build it from source into mavenLocal. build.gradle.kts
+        # lists mavenLocal() first and falls back to JitPack on cache miss.
+        run: |
+          git clone --depth 1 https://github.com/recloudstream/gradle /tmp/cs-gradle
+          printf '%s\n' \
+            'gradle.projectsEvaluated {' \
+            '    gradle.rootProject {' \
+            '        group = "com.github.recloudstream"' \
+            '        version = "-SNAPSHOT"' \
+            '    }' \
+            '}' > /tmp/cs-gradle/fixcoords.init.gradle
+          cd /tmp/cs-gradle
+          chmod +x gradlew
+          ./gradlew publishToMavenLocal -I /tmp/cs-gradle/fixcoords.init.gradle --console=plain
+
       - name: Build Plugins
         run: |
           cd $GITHUB_WORKSPACE/src

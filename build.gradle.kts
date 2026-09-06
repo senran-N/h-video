@@ -5,6 +5,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 buildscript {
     repositories {
+        // Local build of https://github.com/recloudstream/gradle, avoids JitPack flakiness.
+        // CI machines without it fall through to JitPack below.
+        mavenLocal()
         google()
         mavenCentral()
         // Shitpack repo which contains our tools and dependencies
@@ -15,7 +18,7 @@ buildscript {
         classpath("com.android.tools.build:gradle:8.7.3")
         // Cloudstream gradle plugin which makes everything work and builds plugins
         classpath("com.github.recloudstream:gradle:-SNAPSHOT")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.0")
     }
 }
 
