@@ -1,0 +1,23 @@
+[
+    {
+        "iconUrl": "https://rou.video/favicon-32x32.png",
+        "fileHash": "sha256-4201dce5de423b021e863ff3d41fc0b6cb940e6e3e4e2d587cdcada095381408",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/senran-N/h-video",
+        "fileSize": 24477,
+        "status": 1,
+        "language": "zh",
+        "authors": [
+            "h\u89c6\u9891"
+        ],
+        "tvTypes": [
+            "Movie",
+            "TvSeries"
+        ],
+        "version": 6,
+        "internalName": "RouVideo",
+        "description": "rou.video \u8089\u89c6\u9891\u6e90: \u56fd\u4ea7AV/\u65e5\u672c/\u81ea\u62cd/\u63a2\u82b1/\u5267\u96c6, HLS \u76f4\u8fde",
+        "url": "https://raw.githubusercontent.com/senran-N/h-video/builds/RouVideo.cs3",
+        "name": "RouVideo"
+    }
+]
